@@ -1,9 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
+
 import FormInput from '../../src/components/forms/FormInput';
 import Button from '../components/buttons/Button';
-import {Link} from 'react-router-dom';
 import fireBaseApp from './../firebase/firebaseConfig';
+import { useState, useContext } from 'react';
+import AuthContext from './../auth/AuthContext';
 
 const LoginPageStyles = styled.div `
 
@@ -29,16 +33,38 @@ header
 
 const LoginPage = (props) => {
 
+  const auth = useContext(AuthContext)
+  const [email, setEmail] = useState('pavs@yahoo.com');
+  const [password, setPassword] = useState('123456');
+
+  const [isValid, setIsValid] = useState(false);  
+
   const handleLogin = (e) =>{
-    fireBaseApp.auth().signInWithEmailAndPassword('pavs@yahoo.com', '123456')
+    fireBaseApp.auth().signInWithEmailAndPassword(email, password)
     .then(userCredential => {
-      console.log(userCredential)
-      console.log(userCredential.user.email)
+      const userid = userCredential.user.uid;
+      // auth
+      setIsValid(true)
+     
+      auth.authenticated = isValid
+      
+      
     })
+    .catch(error =>{
+      console.log(error.code, error.message)
+      setIsValid(false)
+    })
+
   }
 
-
-
+  if(isValid)
+  {
+     auth.authenticated = true;
+     return <Redirect to="/dashboard"/>
+  }
+  else
+  {
+    
     return(
         
         <LoginPageStyles>
@@ -51,9 +77,9 @@ const LoginPage = (props) => {
    
            </header>
    
-           <FormInput inputType="email" label="email address"/>
+           <FormInput inputType="email" label="email address" onChange={(e) => setEmail(e.target.value.trim())}/>
               
-           <FormInput inputType="password" label="password"/>
+           <FormInput inputType="password" label="password"  onChange={(e) => setPassword(e.target.value.trim())}/>
 
            <Button onClick={handleLogin} label="sign in" uiStyle="login"/>
            
@@ -61,6 +87,7 @@ const LoginPage = (props) => {
         </LoginPageStyles>
    
        )
+  }
 }
 
 

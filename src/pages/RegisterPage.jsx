@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
+import {Redirect} from 'react-router-dom';
 
 import FormInput from '../../src/components/forms/FormInput';
 import Button from '../components/buttons/Button';
+import firebaseApp from './../firebase/firebaseConfig';
 
 const RegisterPageStyles = styled.div `
 
@@ -25,7 +27,35 @@ header
 `
 
 const RegisterPage = () => {
-    return(
+
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const [isRegistered, setIsRegistered] = useState(false);
+
+    const handleRegister = (e) =>{
+      firebaseApp.auth().createUserWithEmailAndPassword(email,password)
+      .then((userCredential) =>{
+
+         setIsRegistered(true);
+
+      })
+      .catch((error)=>{
+        let errorCode = error.code;
+        let errorMessage = error.message;
+        console.log(errorCode,errorMessage)
+        setIsRegistered(false);
+      })
+    }
+
+    if(isRegistered)
+    {
+        return <Redirect to="/login"/>
+    }
+    else
+    {
+      return(
 
         <RegisterPageStyles>
 
@@ -37,16 +67,20 @@ const RegisterPage = () => {
           
             </header>
             
-            <FormInput inputType="text" label="name on the account"/>
+            <FormInput inputType="text" label="name on the account" onChange={(e) => setUsername(e.target.value.trim())}/>
            
-            <FormInput inputType="email" label="valid email address"/>
+            <FormInput inputType="email" label="valid email address" onChange={(e) => setEmail(e.target.value.trim())}/>
            
-            <FormInput inputType="password" label="password (8 characters)"/>
+            <FormInput inputType="password" label="password (8 characters)" onChange={(e) => setPassword(e.target.value.trim())}/>
            
-            <Button label="create account" uiStyle="signup"/>
+            <Button onClick={handleRegister} label="create account" uiStyle="signup"/>
            
         </RegisterPageStyles>
     )
+    }
+
+
+
 }
 
 export default RegisterPage

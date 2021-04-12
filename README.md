@@ -26,7 +26,7 @@ Builds the app for production to the `build` folder.\
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
  
 
-
+### npx firebase deploy
 
  # O'Riley Firebase basics
  https://learning.oreilly.com/videos/building-web-applications/10000MNHV201912/10000MNHV201912-BWAwF_U4M1?autoplay=false

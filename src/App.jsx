@@ -6,13 +6,16 @@ import React from 'react'
  import RegisterPage from './pages/RegisterPage';
  import LoginPage from './pages/LoginPage';
  import PageNotFound from './pages/404';
- import AppBar from './components/appbar/AppBar'
+ import AppBar from './components/appbar/AppBar';
+ import Dashboard from './pages/dashboard/Dashboard';
+ import {AuthProvider} from './auth/AuthContext';
 
 
 function App() {
 
   return (
     <>
+    <AuthProvider>
      <Router>
       <AppBar/>
        <Switch>
@@ -28,6 +31,10 @@ function App() {
          <Route  path="/register"> 
             <RegisterPage/>
          </Route>
+         
+         <Route  path="/dashboard"> 
+            <Dashboard/>
+         </Route>
 
          <Route  path="*"> 
             <PageNotFound/>
@@ -36,6 +43,7 @@ function App() {
        </Switch>
        {/* footer component */}
      </Router>
+     </AuthProvider>
     </>
   );
 }
